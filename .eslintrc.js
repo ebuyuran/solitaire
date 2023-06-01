@@ -3,7 +3,8 @@ module.exports = {
   parserOptions: {
     project: './tsconfig.json',
   },
-  ignorePatterns: ['.eslintrc.js'],
+  ignorePatterns: ['.eslintrc.js', '/src/reportWebVitals.ts', '/src/setupTests.ts'],
+  // ignorePatterns: ['.eslintrc.js'],
   rules: {
     'jsx-quotes': [2, 'prefer-single'],
     'import/prefer-default-export': [0],
@@ -16,5 +17,8 @@ module.exports = {
     'react/require-default-props': [0],
     'react/no-unused-prop-types': [1],
     'react/jsx-curly-brace-presence': [2, { props: 'always', children: 'never' }],
+    '@typescript-eslint/lines-between-class-members': [0],
+    'no-plusplus': [0],
+    '@typescript-eslint/no-loop-func': [0],
   },
 };

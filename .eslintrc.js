@@ -10,6 +10,7 @@ module.exports = {
     'import/prefer-default-export': [0],
     'import/no-default-export': [2],
     '@typescript-eslint/no-unused-vars': [1],
+    'no-param-reassign': [0],
     'func-names': [0],
     'no-else-return': [0],
     'operator-linebreak': [0],

@@ -40,26 +40,3 @@ test('Ensure that all cards are unique', () => {
 
   expect(duplicateFound).toBe(false);
 });
-
-test('Make sure all generated cards are assigned to an order after generating layout', () => {
-  const deck = generateDeck();
-  const layout = generateLayout(deck);
-  let unorderedNumberDetected: boolean = false;
-
-  function checkForOrderNumber(stack: CardInterface[]) {
-    stack.forEach((card) => {
-      if (card.location.order === -1) unorderedNumberDetected = true;
-    });
-  }
-
-  checkForOrderNumber(layout.tableaus[0]);
-  checkForOrderNumber(layout.tableaus[1]);
-  checkForOrderNumber(layout.tableaus[2]);
-  checkForOrderNumber(layout.tableaus[3]);
-  checkForOrderNumber(layout.tableaus[4]);
-  checkForOrderNumber(layout.tableaus[5]);
-  checkForOrderNumber(layout.tableaus[6]);
-  checkForOrderNumber(layout.stock.closed);
-
-  expect(unorderedNumberDetected).toBe(false);
-});

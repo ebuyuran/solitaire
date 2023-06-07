@@ -1,5 +1,5 @@
 import {
-  CardType, CardColour, CardValue, CardLocation, CardInterface, Layout,
+  CardType, CardColour, CardValue, CardInterface, Layout,
 } from '../types/types';
 
 export const cardTypes: CardType[] = ['club', 'diamond', 'heart', 'spade'];
@@ -9,7 +9,6 @@ export class Card implements CardInterface {
   type;
   value;
   colour: CardColour;
-  location: CardLocation = { pile: 'stock', order: -1 };
   open = false;
   src;
 
@@ -89,48 +88,32 @@ export const generateLayout = (deck: CardInterface[]): Layout => {
 
   const stockPile = shuffledDeck.slice(-24);
 
-  function allocateCardLocations() {
-    function forTableau(tableau: CardInterface[]) {
-      // Register the locations of each card object.
-      tableau.forEach((card, i) => {
-        card.location = {
-          pile: 'tableau',
-          order: tableau.indexOf(card),
-        };
-
-        // Start layout with each last card on tableau as open.
-        if (i === tableau.length - 1) {
-          card.open = true;
-        }
-      });
-    }
-
-    forTableau(tableau0);
-    forTableau(tableau1);
-    forTableau(tableau2);
-    forTableau(tableau3);
-    forTableau(tableau4);
-    forTableau(tableau5);
-    forTableau(tableau6);
-
-    stockPile.forEach((card) => {
-      card.location = {
-        pile: 'stock',
-        order: stockPile.indexOf(card),
-      };
+  // Allocate location data for each card.
+  function openLastCardInTableau(tableau: CardInterface[]) {
+    tableau.forEach((card, i) => {
+      // Start the game with each last card on tableau as open.
+      if (i === tableau.length - 1) {
+        card.open = true;
+      }
     });
   }
 
-  allocateCardLocations();
+  openLastCardInTableau(tableau0);
+  openLastCardInTableau(tableau1);
+  openLastCardInTableau(tableau2);
+  openLastCardInTableau(tableau3);
+  openLastCardInTableau(tableau4);
+  openLastCardInTableau(tableau5);
+  openLastCardInTableau(tableau6);
 
   return {
-    tableaus: [tableau0, tableau1, tableau2, tableau3, tableau4, tableau5, tableau6],
+    tableau: [tableau0, tableau1, tableau2, tableau3, tableau4, tableau5, tableau6],
     // Foundation starts empty.
     foundation: [[], [], [], []],
     // Remaining 24 cards goes to stock pile.
-    stock: {
-      open: [],
-      closed: stockPile,
-    },
+    stock: [
+      [],
+      stockPile,
+    ],
   };
 };

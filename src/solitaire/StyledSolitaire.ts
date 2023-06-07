@@ -7,59 +7,31 @@ export const StyledSolitare = styled.div`
   margin: auto;
   padding: 2em;
   font-size: 1vw;
-
   background: grey;
 
   .container {
     position: relative;
+    top: 0;
+    left: 0;
+
     width: 100%;
+    height: 14.3em;
 
-    .foundation {
-      position: absolute;
-      top: 0;
-      left: 0;
+    display: flex;
+    justify-content: space-between;
+  }
 
-      width: 50em;
-      height: 10em;
-      background: black;
+  .tableaus {
+    top: 10em;
+  }
 
-      .stack {
-        display: inline-block;
-        width: 10em;
-        height: 10em;
-        background: white;
-        margin: 0 1em 0 0;
-      }
-    }
+  .stack {
+    position: relative;
+    width: 13%;
+    height: 14.3em;
 
-    .stock {
-      position: absolute;
-      top: 0;
-      right: 0;
-
-      width: 21em;
-      height: 10em;
-      background: black;
-
-      .open {
-        position: absolute;
-        top: 0;
-        right: 11;
-
-        width: 10em;
-        height: 14.3em;
-        background: white;
-      }
-
-      .closed {
-        position: absolute;
-        top: 0;
-        right: 0em;
-
-        width: 10em;
-        height: 14.3em;
-        background: white;
-      }
+    img {
+      position: relative;
     }
   }
 `;

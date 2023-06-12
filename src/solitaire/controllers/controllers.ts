@@ -25,9 +25,11 @@ export class Card implements CardInterface {
 export const generateDeck = () => {
   const deck: CardInterface[] = [];
 
+  // Generating 52 poker cards
+  // 13 cards for each type (club, spade, heart and diamond).
   cardTypes.forEach((type) => {
     cardValues.forEach((value) => {
-      deck.push(new Card(type, value));
+      deck.push(new Card(type, value)); // Pushing each card on our deck.
     });
   });
 
@@ -35,9 +37,15 @@ export const generateDeck = () => {
 };
 
 export const generateLayout = (deck: CardInterface[]): Layout => {
+  // Start by shuffling to randomize our deck.
   const shuffledDeck = deck.sort(() => Math.random() - 0.5);
 
-  // Generate tableaus and show the last card.
+  /*
+    Generate tableaus and show the last card.
+    In a solitare game, there are 7 tableaus with
+    each one containing 1, 2, 3, 4, 5, 6 and 7 cards
+    respectively.
+  */
 
   const tableau0 = [
     shuffledDeck[0],
@@ -88,34 +96,27 @@ export const generateLayout = (deck: CardInterface[]): Layout => {
     shuffledDeck[27],
   ];
 
+  // All the cards that didn't go to tableaus, goes to stock pile.
+  // There are 24 cards left so remaining cards from deck array.
   const stockPile = shuffledDeck.slice(-24);
 
-  // Allocate location data for each card.
-  function openLastCardInTableau(tableau: CardInterface[]) {
-    tableau.forEach((card, i) => {
-      // Start the game with each last card on tableau as open.
-      if (i === tableau.length - 1) {
-        card.open = true;
-      }
-    });
-  }
-
-  openLastCardInTableau(tableau0);
-  openLastCardInTableau(tableau1);
-  openLastCardInTableau(tableau2);
-  openLastCardInTableau(tableau3);
-  openLastCardInTableau(tableau4);
-  openLastCardInTableau(tableau5);
-  openLastCardInTableau(tableau6);
+  // Start the game with each last card on tableau as open.
+  tableau0[tableau0.length - 1].open = true;
+  tableau1[tableau1.length - 1].open = true;
+  tableau2[tableau2.length - 1].open = true;
+  tableau3[tableau3.length - 1].open = true;
+  tableau4[tableau4.length - 1].open = true;
+  tableau5[tableau5.length - 1].open = true;
+  tableau6[tableau6.length - 1].open = true;
 
   return {
     tableau: [tableau0, tableau1, tableau2, tableau3, tableau4, tableau5, tableau6],
-    // Foundation starts empty.
+    // Foundation stacks starts empty.
     foundation: [[], [], [], []],
     // Remaining 24 cards goes to stock pile.
     stock: [
-      [],
-      stockPile,
+      [], // Opened stock pile.
+      stockPile, // Closed stock pile.
     ],
   };
 };

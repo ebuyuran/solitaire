@@ -55,10 +55,11 @@ export function Card(props: Props) {
       style={{
         zIndex: index,
         top,
-        opacity: `${isDragging ? '.5' : '1'}`,
+        opacity: `${isDragging ? '0' : '1'}`,
       }}
       onClick={clickEvent || undefined}
     >
+      {/* An empty div is required to designate drop target. */}
       <div ref={drop}>
         <img
           ref={drag}

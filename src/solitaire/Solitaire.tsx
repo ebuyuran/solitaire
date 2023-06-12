@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { generateDeck, generateLayout } from './controllers/controllers';
+import { CardInterface, CardPiles } from './types/types';
 import { StyledSolitare } from './StyledSolitaire';
 
 import { Card } from './Components/Card';
@@ -28,6 +29,22 @@ function Solitaire() {
     });
   };
 
+  const stackGenerator = (
+    stack: CardInterface[],
+    location: { stack: CardPiles, value: number },
+    clickEvent?: (() => void) | undefined,
+  ) => (
+    stack.map((card) => (
+      <Card
+        key={`${card.type}_${card.value}`}
+        card={card}
+        pile={stack}
+        location={location}
+        clickEvent={clickEvent}
+      />
+    ))
+  );
+
   return (
     <StyledSolitare>
       <div className={'solitaire'}>
@@ -38,97 +55,39 @@ function Solitaire() {
           <div className={'stack'}>4</div>
           <div className={'stack'}>0</div>
           <div className={'stack'}>
-            { layout.stock[0].map((card) => (
-              <Card
-                key={`${card.type} ${card.value}`}
-                card={card}
-                pile={layout.stock[0]}
-                location={{ stack: 'stock', value: 0 }}
-              />
-            )) }
+            { stackGenerator(layout.stock[0], { stack: 'stock', value: 0 }) }
           </div>
           <div className={'stack'}>
-            { layout.stock[1].map((card) => (
-              <Card
-                key={`${card.type} ${card.value}`}
-                card={card}
-                pile={layout.stock[1]}
-                location={{ stack: 'stock', value: 1 }}
-                clickEvent={getNextCardOnStockPile}
-              />
-            )) }
+            {
+              stackGenerator(
+                layout.stock[1],
+                { stack: 'stock', value: 1 },
+                getNextCardOnStockPile,
+              )
+            }
           </div>
         </div>
         <div className={'container tableaus'}>
           <div className={'stack'}>
-            { layout.tableau[0].map((card) => (
-              <Card
-                key={`${card.type} ${card.value}`}
-                card={card}
-                pile={layout.tableau[0]}
-                location={{ stack: 'tableau', value: 0 }}
-              />
-            )) }
+            { stackGenerator(layout.tableau[0], { stack: 'stock', value: 0 }) }
           </div>
           <div className={'stack'}>
-            { layout.tableau[1].map((card) => (
-              <Card
-                key={`${card.type} ${card.value}`}
-                card={card}
-                pile={layout.tableau[1]}
-                location={{ stack: 'tableau', value: 1 }}
-              />
-            )) }
+            { stackGenerator(layout.tableau[1], { stack: 'stock', value: 1 }) }
           </div>
           <div className={'stack'}>
-            { layout.tableau[2].map((card) => (
-              <Card
-                key={`${card.type} ${card.value}`}
-                card={card}
-                pile={layout.tableau[2]}
-                location={{ stack: 'tableau', value: 2 }}
-              />
-            )) }
+            { stackGenerator(layout.tableau[2], { stack: 'stock', value: 2 }) }
           </div>
           <div className={'stack'}>
-            { layout.tableau[3].map((card) => (
-              <Card
-                key={`${card.type} ${card.value}`}
-                card={card}
-                pile={layout.tableau[3]}
-                location={{ stack: 'tableau', value: 3 }}
-              />
-            )) }
+            { stackGenerator(layout.tableau[3], { stack: 'stock', value: 3 }) }
           </div>
           <div className={'stack'}>
-            { layout.tableau[4].map((card) => (
-              <Card
-                key={`${card.type} ${card.value}`}
-                card={card}
-                pile={layout.tableau[4]}
-                location={{ stack: 'tableau', value: 4 }}
-              />
-            )) }
+            { stackGenerator(layout.tableau[4], { stack: 'stock', value: 4 }) }
           </div>
           <div className={'stack'}>
-            { layout.tableau[5].map((card) => (
-              <Card
-                key={`${card.type} ${card.value}`}
-                card={card}
-                pile={layout.tableau[5]}
-                location={{ stack: 'tableau', value: 5 }}
-              />
-            )) }
+            { stackGenerator(layout.tableau[5], { stack: 'stock', value: 5 }) }
           </div>
           <div className={'stack'}>
-            { layout.tableau[6].map((card) => (
-              <Card
-                key={`${card.type} ${card.value}`}
-                card={card}
-                pile={layout.tableau[6]}
-                location={{ stack: 'tableau', value: 6 }}
-              />
-            )) }
+            { stackGenerator(layout.tableau[6], { stack: 'stock', value: 6 }) }
           </div>
         </div>
       </div>

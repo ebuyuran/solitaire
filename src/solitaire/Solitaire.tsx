@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { CardInterface } from './types/types';
 import { generateDeck, generateLayout } from './controllers/controllers';
 import { StyledSolitare } from './StyledSolitaire';
 

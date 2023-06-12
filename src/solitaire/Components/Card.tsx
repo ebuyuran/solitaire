@@ -1,5 +1,7 @@
 import React from 'react';
+import { useDrag, useDrop } from 'react-dnd';
 import { CardInterface, CardPiles } from '../types/types';
+import { ItemTypes } from '../constants/constants';
 import { StyledCard } from './StyledCard';
 
 interface Props {
@@ -22,13 +24,48 @@ export function Card(props: Props) {
   const top = location && location.stack === 'tableau' ?
     `${index * 2}em` : undefined;
 
+  // React-DND
+  const [{ isDragging }, drag] = useDrag(() => ({
+    type: ItemTypes.CARD,
+    item: {
+      id: card.id,
+      location: {
+        ...location,
+      },
+    },
+    collect: (monitor) => ({
+      isDragging: !!monitor.isDragging(),
+    }),
+  }));
+
+  const [, drop] = useDrop(() => ({
+    accept: ItemTypes.CARD,
+    drop: (item) => {
+      console.log(item, 0);
+      console.log(`Moved On: ${card.value} of ${card.type}s`);
+    },
+    collect: (monitor) => ({
+      isOver: !!monitor.isOver(),
+    }),
+  }), []);
+
   return (
     <StyledCard
       className={'card'}
-      style={{ zIndex: index, top }}
+      style={{
+        zIndex: index,
+        top,
+        opacity: `${isDragging ? '.5' : '1'}`,
+      }}
       onClick={clickEvent || undefined}
     >
-      <img src={card.open ? `./cards/${card.src}.png` : './cards/closed.png'} alt={`${card.value} of ${card.type}`} />
+      <div ref={drop}>
+        <img
+          ref={drag}
+          src={card.open ? `./cards/${card.src}.png` : './cards/closed.png'}
+          alt={`${card.value} of ${card.type}`}
+        />
+      </div>
     </StyledCard>
   );
 }

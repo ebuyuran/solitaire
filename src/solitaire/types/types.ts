@@ -9,6 +9,7 @@ export interface CardInterface {
   value: CardValue;
   open: boolean;
   src: string;
+  id: string;
 }
 
 export interface Layout {

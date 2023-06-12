@@ -6,6 +6,7 @@ export const cardTypes: CardType[] = ['club', 'diamond', 'heart', 'spade'];
 export const cardValues: CardValue[] = ['king', 'queen', 'jack', '10', '9', '8', '7', '6', '5', '4', '3', '2', 'ace'];
 
 export class Card implements CardInterface {
+  id;
   type;
   value;
   colour: CardColour;
@@ -15,6 +16,7 @@ export class Card implements CardInterface {
   constructor(type: CardType, value: CardValue) {
     this.type = type;
     this.value = value;
+    this.id = `${this.type}_${this.value}`;
     this.colour = this.type === 'club' || this.type === 'spade' ? 'black' : 'red';
     this.src = `${this.type}_${this.value}`;
   }

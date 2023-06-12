@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { CardInterface } from './types/types';
 import { generateDeck, generateLayout } from './controllers/controllers';
 import { StyledSolitare } from './StyledSolitaire';
 
@@ -9,6 +10,24 @@ function Solitaire() {
   const [layout, setLayout] = useState(generateLayout(deck));
 
   console.log(layout);
+
+  const getNextCardOnStockPile = () => {
+    const openStockPile = layout.stock[0];
+    const closedStockPile = layout.stock[1];
+    const cardToBeMoved = closedStockPile[closedStockPile.length - 1];
+    cardToBeMoved.open = true;
+
+    openStockPile.push(cardToBeMoved);
+    closedStockPile.pop();
+
+    setLayout({
+      foundation: [...layout.foundation],
+      tableau: [...layout.tableau],
+      stock: [
+        openStockPile, closedStockPile,
+      ],
+    });
+  };
 
   return (
     <StyledSolitare>
@@ -25,6 +44,7 @@ function Solitaire() {
                 key={`${card.type} ${card.value}`}
                 card={card}
                 pile={layout.stock[0]}
+                location={{ stack: 'stock', value: 0 }}
               />
             )) }
           </div>
@@ -34,6 +54,8 @@ function Solitaire() {
                 key={`${card.type} ${card.value}`}
                 card={card}
                 pile={layout.stock[1]}
+                location={{ stack: 'stock', value: 1 }}
+                clickEvent={getNextCardOnStockPile}
               />
             )) }
           </div>

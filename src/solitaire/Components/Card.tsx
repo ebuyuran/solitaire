@@ -1,37 +1,38 @@
 import React from 'react';
 import { useDrag, useDrop } from 'react-dnd';
-import { CardInterface, CardPiles } from '../types/types';
+import {
+  Layout, CardInterface, CardLocation, CardMovementParams,
+} from '../types/types';
+import { moveCard } from '../controllers/moveCard';
 import { ItemTypes } from '../constants/constants';
 import { StyledCard } from './StyledCard';
 
 interface Props {
   pile: CardInterface[];
   card: CardInterface;
-  location: {
-    stack: CardPiles;
-    value: number;
-  };
+  location: CardLocation;
+  layout: Layout;
+  setLayout: React.Dispatch<React.SetStateAction<Layout>>;
   clickEvent?: () => void;
 }
 
 export function Card(props: Props) {
   const {
-    card, pile, location, clickEvent,
+    card, pile, location, clickEvent, layout, setLayout,
   } = props;
 
   const index = pile.indexOf(card);
 
-  const top = location && location.stack === 'tableau' ?
+  const top = location.pile === 'tableau' ?
     `${index * 2}em` : undefined;
 
   // React-DND
   const [{ isDragging }, drag] = useDrag(() => ({
-    type: ItemTypes.CARD,
+    // Only allow cards which are open to be draggable.
+    type: card.open ? ItemTypes.CARD : 'undraggable',
     item: {
       id: card.id,
-      location: {
-        ...location,
-      },
+      location,
     },
     collect: (monitor) => ({
       isDragging: !!monitor.isDragging(),
@@ -40,9 +41,16 @@ export function Card(props: Props) {
 
   const [, drop] = useDrop(() => ({
     accept: ItemTypes.CARD,
-    drop: (item) => {
-      console.log(item, 0);
-      console.log(`Moved On: ${card.value} of ${card.type}s`);
+    drop: (item: CardMovementParams) => {
+      moveCard(
+        layout,
+        setLayout,
+        item,
+        {
+          id: card.id,
+          location,
+        },
+      );
     },
     collect: (monitor) => ({
       isOver: !!monitor.isOver(),

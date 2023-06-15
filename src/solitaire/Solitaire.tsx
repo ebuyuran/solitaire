@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { generateDeck, generateLayout } from './controllers/controllers';
-import { CardInterface, CardPiles } from './types/types';
+import { generateDeck, generateLayout } from './controllers/generateDeck';
+import { CardInterface, CardLocation } from './types/types';
 import { StyledSolitare } from './StyledSolitaire';
 
 import { Card } from './Components/Card';
@@ -31,7 +31,7 @@ function Solitaire() {
 
   const stackGenerator = (
     stack: CardInterface[],
-    location: { stack: CardPiles, value: number },
+    location: CardLocation,
     clickEvent?: (() => void) | undefined,
   ) => (
     stack.map((card) => (
@@ -41,6 +41,8 @@ function Solitaire() {
         pile={stack}
         location={location}
         clickEvent={clickEvent}
+        layout={layout}
+        setLayout={setLayout}
       />
     ))
   );
@@ -55,13 +57,13 @@ function Solitaire() {
           <div className={'stack'}>4</div>
           <div className={'stack'}>0</div>
           <div className={'stack'}>
-            { stackGenerator(layout.stock[0], { stack: 'stock', value: 0 }) }
+            { stackGenerator(layout.stock[0], { pile: 'stock', value: 0 }) }
           </div>
           <div className={'stack'}>
             {
               stackGenerator(
                 layout.stock[1],
-                { stack: 'stock', value: 1 },
+                { pile: 'stock', value: 1 },
                 getNextCardOnStockPile,
               )
             }
@@ -69,25 +71,25 @@ function Solitaire() {
         </div>
         <div className={'container tableaus'}>
           <div className={'stack'}>
-            { stackGenerator(layout.tableau[0], { stack: 'stock', value: 0 }) }
+            { stackGenerator(layout.tableau[0], { pile: 'tableau', value: 0 }) }
           </div>
           <div className={'stack'}>
-            { stackGenerator(layout.tableau[1], { stack: 'stock', value: 1 }) }
+            { stackGenerator(layout.tableau[1], { pile: 'tableau', value: 1 }) }
           </div>
           <div className={'stack'}>
-            { stackGenerator(layout.tableau[2], { stack: 'stock', value: 2 }) }
+            { stackGenerator(layout.tableau[2], { pile: 'tableau', value: 2 }) }
           </div>
           <div className={'stack'}>
-            { stackGenerator(layout.tableau[3], { stack: 'stock', value: 3 }) }
+            { stackGenerator(layout.tableau[3], { pile: 'tableau', value: 3 }) }
           </div>
           <div className={'stack'}>
-            { stackGenerator(layout.tableau[4], { stack: 'stock', value: 4 }) }
+            { stackGenerator(layout.tableau[4], { pile: 'tableau', value: 4 }) }
           </div>
           <div className={'stack'}>
-            { stackGenerator(layout.tableau[5], { stack: 'stock', value: 5 }) }
+            { stackGenerator(layout.tableau[5], { pile: 'tableau', value: 5 }) }
           </div>
           <div className={'stack'}>
-            { stackGenerator(layout.tableau[6], { stack: 'stock', value: 6 }) }
+            { stackGenerator(layout.tableau[6], { pile: 'tableau', value: 6 }) }
           </div>
         </div>
       </div>

@@ -1,5 +1,5 @@
 import { CardInterface } from '../types/types';
-import { generateDeck, generateLayout } from './controllers';
+import { generateDeck, generateLayout } from './generateDeck';
 
 test('Generates 52 Cards', () => {
   const deck = generateDeck();

@@ -2,8 +2,7 @@ import {
   CardType, CardColour, CardValue, CardInterface, Layout,
 } from '../types/types';
 
-export const cardTypes: CardType[] = ['club', 'diamond', 'heart', 'spade'];
-export const cardValues: CardValue[] = ['king', 'queen', 'jack', '10', '9', '8', '7', '6', '5', '4', '3', '2', 'ace'];
+import { cardTypes, cardValues } from './cardProperties';
 
 export class Card implements CardInterface {
   id;
@@ -29,7 +28,7 @@ export const generateDeck = () => {
   // 13 cards for each type (club, spade, heart and diamond).
   cardTypes.forEach((type) => {
     cardValues.forEach((value) => {
-      deck.push(new Card(type, value)); // Pushing each card on our deck.
+      deck.push(new Card(type, value)); // Pushing each new card into our deck.
     });
   });
 
@@ -37,8 +36,9 @@ export const generateDeck = () => {
 };
 
 export const generateLayout = (deck: CardInterface[]): Layout => {
-  // Start by shuffling to randomize our deck.
-  const shuffledDeck = deck.sort(() => Math.random() - 0.5);
+  // Start by shuffling our deck.
+  // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort#description
+  const shuffledDeck = deck.sort(() => ((Math.random() - 0.5) > 0 ? 1 : -1));
 
   /*
     Generate tableaus and show the last card.

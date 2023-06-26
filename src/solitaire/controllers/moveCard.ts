@@ -1,12 +1,19 @@
 import { Layout, CardInterface, CardMovementParams } from '../types/types';
 import { cardValues } from './cardProperties';
 
+type MoveToFoundationBase = false | number;
+
 type MoveCardFunction = (
   layout: Layout,
   setLayout: React.Dispatch<React.SetStateAction<Layout>>,
   movedCard: CardMovementParams,
   movedOn: CardMovementParams,
 ) => void;
+
+const getCardData = (layout: Layout, movedCardData: CardMovementParams) => {
+  const { id, location } = movedCardData;
+  return layout[location.pile][location.value].find((card: CardInterface) => card.id === id);
+};
 
 const isValidMoveToTableauAction = (
   draggedCard: CardInterface,
@@ -34,30 +41,73 @@ const isValidMoveToTableauAction = (
   return isValid;
 };
 
+const isValidMoveToFoundationAction = (
+  draggedCard: CardInterface,
+  targetCard: CardInterface | undefined,
+  movingToBase: MoveToFoundationBase,
+) => {
+  let isValid = true;
+
+  // Only Aces can be moved to a base foundation slot.
+  if (movingToBase !== false && draggedCard.value !== 'ace') {
+    console.warn('Only aces can be moved to a base foundation.');
+    isValid = false;
+  }
+
+  // When dragged card is not moving to a base foundation slot...
+  if (targetCard) {
+    // Cards must be of the same type in foundation slot.
+    if (draggedCard.type !== targetCard.type) {
+      console.warn('Different type of cards in foundation stack.');
+      isValid = false;
+    }
+
+    // Cards must follow the order in foundation slot.
+    const draggedCardValue = cardValues.indexOf(draggedCard.value);
+    const targetCardValue = cardValues.indexOf(targetCard.value);
+
+    if (draggedCardValue - targetCardValue !== -1) {
+      isValid = false;
+      console.warn('Invalid action: Incorrect order on foundation stack.');
+    }
+  }
+
+  return isValid;
+};
+
 export const moveCard: MoveCardFunction = (layout, setLayout, draggedCard, targetCard) => {
-  const getCardData = (movedCardData: CardMovementParams) => {
-    const { id, location } = movedCardData;
-    return layout[location.pile][location.value].find((card: CardInterface) => card.id === id);
-  };
+  const draggedCardData = getCardData(layout, draggedCard);
+  const targetCardData = getCardData(layout, targetCard);
 
-  const draggedCardData = getCardData(draggedCard);
-  const targetCardData = getCardData(targetCard);
-
-  // If any of the card objects are not found, throw an error.
-  if (draggedCardData === undefined || targetCardData === undefined) {
-    throw new Error('Code error: Card data not found');
+  // If dragged card object is not found, throw an error.
+  if (draggedCardData === undefined) {
+    throw new Error('Code error: Dragged card data not found');
   }
 
   // Checking the target card, we behave depending on which pile the card is moving to.
   switch (targetCard.location.pile) {
     case 'tableau':
+      if (targetCardData === undefined) {
+        throw new Error('Code error: Dragged card data not found');
+      }
+
       if (!isValidMoveToTableauAction(draggedCardData, targetCardData)) {
-        // Invalid card action.
         return;
       }
       break;
 
     case 'foundation':
+      {
+        let movingToBase: MoveToFoundationBase = false;
+
+        if (targetCard.location.pile === 'foundation' && targetCard.id === 'base') {
+          movingToBase = targetCard.location.value;
+        }
+
+        if (!isValidMoveToFoundationAction(draggedCardData, targetCardData, movingToBase)) {
+          return;
+        }
+      }
       break;
 
     case 'stock':

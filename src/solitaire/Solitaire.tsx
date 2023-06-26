@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { generateDeck, generateLayout } from './controllers/generateDeck';
 import { CardInterface, CardLocation } from './types/types';
 import { StyledSolitare } from './StyledSolitaire';
 
-import { Card } from './Components/Card';
+import { Card } from './Components/Card/Card';
+import { FoundationBase } from './Components/FoundationBase/FoundationBase';
 
 function Solitaire() {
   const deck = generateDeck();
@@ -47,15 +48,46 @@ function Solitaire() {
     ))
   );
 
+  useEffect(() => {
+    // Open the closed last cards on tableau piles.
+    let layoutChanged = false;
+    const newLayout = { ...layout };
+
+    newLayout.tableau.forEach((pile) => {
+      const lastCard = pile[pile.length - 1];
+
+      if (lastCard.open === false) {
+        lastCard.open = true;
+        layoutChanged = true;
+      }
+    });
+
+    if (layoutChanged) {
+      setLayout(newLayout);
+    }
+  }, [layout, setLayout]);
+
   return (
     <StyledSolitare>
       <div className={'solitaire'}>
         <div className={'container'}>
-          <div className={'stack'}>1</div>
-          <div className={'stack'}>2</div>
-          <div className={'stack'}>3</div>
-          <div className={'stack'}>4</div>
-          <div className={'stack'}>0</div>
+          <div className={'stack'}>
+            <FoundationBase layout={layout} setLayout={setLayout} stackID={0} />
+            { stackGenerator(layout.foundation[0], { pile: 'foundation', value: 0 }) }
+          </div>
+          <div className={'stack'}>
+            <FoundationBase layout={layout} setLayout={setLayout} stackID={1} />
+            { stackGenerator(layout.foundation[1], { pile: 'foundation', value: 1 }) }
+          </div>
+          <div className={'stack'}>
+            <FoundationBase layout={layout} setLayout={setLayout} stackID={2} />
+            { stackGenerator(layout.foundation[2], { pile: 'foundation', value: 2 }) }
+          </div>
+          <div className={'stack'}>
+            <FoundationBase layout={layout} setLayout={setLayout} stackID={3} />
+            { stackGenerator(layout.foundation[3], { pile: 'foundation', value: 3 }) }
+          </div>
+          <div className={'stack'} />
           <div className={'stack'}>
             { stackGenerator(layout.stock[0], { pile: 'stock', value: 0 }) }
           </div>

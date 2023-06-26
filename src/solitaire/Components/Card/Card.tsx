@@ -2,9 +2,9 @@ import React from 'react';
 import { useDrag, useDrop } from 'react-dnd';
 import {
   Layout, CardInterface, CardLocation, CardMovementParams,
-} from '../types/types';
-import { moveCard } from '../controllers/moveCard';
-import { ItemTypes } from '../constants/constants';
+} from '../../types/types';
+import { moveCard } from '../../controllers/moveCard';
+import { ItemTypes } from '../../constants/constants';
 import { StyledCard } from './StyledCard';
 
 interface Props {

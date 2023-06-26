@@ -15,7 +15,7 @@ export const StyledSolitare = styled.div`
     left: 0;
 
     width: 100%;
-    height: 14.3em;
+    height: 18em;
 
     display: flex;
     justify-content: space-between;
@@ -28,7 +28,7 @@ export const StyledSolitare = styled.div`
   .stack {
     position: relative;
     width: 13%;
-    height: 14.3em;
+    height: 18em;
 
     img {
       position: relative;

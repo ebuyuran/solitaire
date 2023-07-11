@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { generateDeck, generateLayout } from './controllers/generateDeck';
-import { CardInterface, CardLocation } from './types/types';
+import { validateMoveCardAction } from './controllers/validateMoveCardAction';
+import { CardInterface, CardLocation, CardMovementParams } from './types/types';
 import { StyledSolitare } from './StyledSolitaire';
 
 import { Card } from './Components/Card/Card';
+import { Stack } from './Components/Stack/Stack';
 import { FoundationBase } from './Components/FoundationBase/FoundationBase';
 
 function Solitaire() {
   const deck = generateDeck();
   const [layout, setLayout] = useState(generateLayout(deck));
-
-  console.log(layout);
 
   const getNextCardOnStockPile = () => {
     const openStockPile = layout.stock[0];
@@ -30,23 +30,31 @@ function Solitaire() {
     });
   };
 
-  const stackGenerator = (
-    stack: CardInterface[],
-    location: CardLocation,
-    clickEvent?: (() => void) | undefined,
-  ) => (
-    stack.map((card) => (
-      <Card
-        key={`${card.type}_${card.value}`}
-        card={card}
-        pile={stack}
-        location={location}
-        clickEvent={clickEvent}
-        layout={layout}
-        setLayout={setLayout}
-      />
-    ))
-  );
+  const moveCard = (draggedCard: CardMovementParams, targetCard: CardMovementParams) => {
+    const isValidMoveAction = validateMoveCardAction(layout, draggedCard, targetCard);
+
+    if (isValidMoveAction) {
+      // Since the validation is successful, dragged card object has returned.
+      const draggedCardObject = isValidMoveAction;
+
+      // THIS ONLY WORKS FOR SINGLE CARD MOVEMENTS FOR NOW!
+
+      // Remove the card from dragged pile.
+      const draggedPile = [...layout[draggedCard.location.pile][draggedCard.location.value]];
+      const updatedDraggedPile = draggedPile.slice(0, draggedPile.length - 1);
+
+      // Add the card to the target pile.
+      const targetPile = [...layout[targetCard.location.pile][targetCard.location.value]];
+      targetPile.push(draggedCardObject);
+
+      // Create a new layout object and update the layout.
+      const newLayout = { ...layout };
+      newLayout[draggedCard.location.pile][draggedCard.location.value] = updatedDraggedPile;
+      newLayout[targetCard.location.pile][targetCard.location.value] = targetPile;
+
+      setLayout(newLayout);
+    }
+  };
 
   useEffect(() => {
     // Open the closed last cards on tableau piles.
@@ -72,56 +80,103 @@ function Solitaire() {
       <div className={'solitaire'}>
         <div className={'container'}>
           <div className={'stack'}>
-            <FoundationBase layout={layout} setLayout={setLayout} stackID={0} />
-            { stackGenerator(layout.foundation[0], { pile: 'foundation', value: 0 }) }
+            <FoundationBase moveCard={moveCard} stackID={0} />
+            <Stack
+              stack={layout.foundation[0]}
+              location={{ pile: 'foundation', value: 0 }}
+              moveCard={moveCard}
+            />
           </div>
           <div className={'stack'}>
-            <FoundationBase layout={layout} setLayout={setLayout} stackID={1} />
-            { stackGenerator(layout.foundation[1], { pile: 'foundation', value: 1 }) }
+            <FoundationBase moveCard={moveCard} stackID={1} />
+            <Stack
+              stack={layout.foundation[1]}
+              location={{ pile: 'foundation', value: 1 }}
+              moveCard={moveCard}
+            />
           </div>
           <div className={'stack'}>
-            <FoundationBase layout={layout} setLayout={setLayout} stackID={2} />
-            { stackGenerator(layout.foundation[2], { pile: 'foundation', value: 2 }) }
+            <FoundationBase moveCard={moveCard} stackID={2} />
+            <Stack
+              stack={layout.foundation[2]}
+              location={{ pile: 'foundation', value: 2 }}
+              moveCard={moveCard}
+            />
           </div>
           <div className={'stack'}>
-            <FoundationBase layout={layout} setLayout={setLayout} stackID={3} />
-            { stackGenerator(layout.foundation[3], { pile: 'foundation', value: 3 }) }
+            <FoundationBase moveCard={moveCard} stackID={3} />
+            <Stack
+              stack={layout.foundation[3]}
+              location={{ pile: 'foundation', value: 3 }}
+              moveCard={moveCard}
+            />
           </div>
           <div className={'stack'} />
           <div className={'stack'}>
-            { stackGenerator(layout.stock[0], { pile: 'stock', value: 0 }) }
+            <Stack
+              stack={layout.stock[0]}
+              location={{ pile: 'stock', value: 0 }}
+              moveCard={moveCard}
+            />
           </div>
           <div className={'stack'}>
-            {
-              stackGenerator(
-                layout.stock[1],
-                { pile: 'stock', value: 1 },
-                getNextCardOnStockPile,
-              )
-            }
+            <Stack
+              stack={layout.stock[0]}
+              location={{ pile: 'stock', value: 0 }}
+              moveCard={moveCard}
+              clickEvent={getNextCardOnStockPile}
+            />
           </div>
         </div>
         <div className={'container tableaus'}>
           <div className={'stack'}>
-            { stackGenerator(layout.tableau[0], { pile: 'tableau', value: 0 }) }
+            <Stack
+              stack={layout.tableau[0]}
+              location={{ pile: 'tableau', value: 0 }}
+              moveCard={moveCard}
+            />
           </div>
           <div className={'stack'}>
-            { stackGenerator(layout.tableau[1], { pile: 'tableau', value: 1 }) }
+            <Stack
+              stack={layout.tableau[1]}
+              location={{ pile: 'tableau', value: 1 }}
+              moveCard={moveCard}
+            />
           </div>
           <div className={'stack'}>
-            { stackGenerator(layout.tableau[2], { pile: 'tableau', value: 2 }) }
+            <Stack
+              stack={layout.tableau[2]}
+              location={{ pile: 'tableau', value: 2 }}
+              moveCard={moveCard}
+            />
           </div>
           <div className={'stack'}>
-            { stackGenerator(layout.tableau[3], { pile: 'tableau', value: 3 }) }
+            <Stack
+              stack={layout.tableau[3]}
+              location={{ pile: 'tableau', value: 3 }}
+              moveCard={moveCard}
+            />
           </div>
           <div className={'stack'}>
-            { stackGenerator(layout.tableau[4], { pile: 'tableau', value: 4 }) }
+            <Stack
+              stack={layout.tableau[4]}
+              location={{ pile: 'tableau', value: 4 }}
+              moveCard={moveCard}
+            />
           </div>
           <div className={'stack'}>
-            { stackGenerator(layout.tableau[5], { pile: 'tableau', value: 5 }) }
+            <Stack
+              stack={layout.tableau[5]}
+              location={{ pile: 'tableau', value: 5 }}
+              moveCard={moveCard}
+            />
           </div>
           <div className={'stack'}>
-            { stackGenerator(layout.tableau[6], { pile: 'tableau', value: 6 }) }
+            <Stack
+              stack={layout.tableau[6]}
+              location={{ pile: 'tableau', value: 6 }}
+              moveCard={moveCard}
+            />
           </div>
         </div>
       </div>

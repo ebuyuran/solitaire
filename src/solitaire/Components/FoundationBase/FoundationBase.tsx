@@ -1,29 +1,25 @@
 import React from 'react';
 import { useDrop } from 'react-dnd';
 import { ItemTypes } from '../../constants/constants';
-import { Layout, CardMovementParams } from '../../types/types';
-import { moveCard } from '../../controllers/moveCard';
+import { CardMovementParams } from '../../types/types';
 
 import { StyledFoundationBase } from './StyledFoundationBase';
 
 interface FoundationStackProps {
   stackID: number;
-  layout: Layout;
-  setLayout: React.Dispatch<React.SetStateAction<Layout>>;
+  moveCard: (draggedCard: CardMovementParams, targetCard: CardMovementParams) => void
 }
 
 export function FoundationBase(props: FoundationStackProps) {
-  const { stackID, layout, setLayout } = props;
+  const { stackID, moveCard } = props;
 
   const [, drop] = useDrop(() => ({
     accept: ItemTypes.CARD,
     drop: (item: CardMovementParams) => {
       moveCard(
-        layout,
-        setLayout,
         item,
         {
-          id: 'base',
+          id: 'foundation-base',
           location: {
             pile: 'foundation',
             value: stackID,

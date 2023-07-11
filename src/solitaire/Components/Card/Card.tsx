@@ -1,9 +1,8 @@
 import React from 'react';
 import { useDrag, useDrop } from 'react-dnd';
 import {
-  Layout, CardInterface, CardLocation, CardMovementParams,
+  CardInterface, CardLocation, CardMovementParams,
 } from '../../types/types';
-import { moveCard } from '../../controllers/moveCard';
 import { ItemTypes } from '../../constants/constants';
 import { StyledCard } from './StyledCard';
 
@@ -11,14 +10,13 @@ interface Props {
   pile: CardInterface[];
   card: CardInterface;
   location: CardLocation;
-  layout: Layout;
-  setLayout: React.Dispatch<React.SetStateAction<Layout>>;
+  moveCard: (draggedCard: CardMovementParams, targetCard: CardMovementParams) => void;
   clickEvent?: () => void;
 }
 
 export function Card(props: Props) {
   const {
-    card, pile, location, clickEvent, layout, setLayout,
+    card, pile, location, moveCard, clickEvent,
   } = props;
 
   const index = pile.indexOf(card);
@@ -43,8 +41,6 @@ export function Card(props: Props) {
     accept: ItemTypes.CARD,
     drop: (item: CardMovementParams) => {
       moveCard(
-        layout,
-        setLayout,
         item,
         {
           id: card.id,

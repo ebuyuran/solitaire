@@ -1,179 +1,157 @@
-import React, { useState, useEffect } from 'react';
+import React, { useReducer, useEffect } from 'react';
 import { generateDeck, generateLayout } from './controllers/generateDeck';
-import { validateMoveCardAction } from './controllers/validateMoveCardAction';
-import { CardInterface, CardLocation, CardMovementParams } from './types/types';
+import { Action, updateLayout } from './controllers/updateLayout';
+import { Layout, CardMovementParams } from './types/types';
 import { StyledSolitare } from './StyledSolitaire';
-
-import { Card } from './Components/Card/Card';
 import { Stack } from './Components/Stack/Stack';
 import { FoundationBase } from './Components/FoundationBase/FoundationBase';
 
+function reducer(state: Layout, action: Action) {
+  return updateLayout(state, action);
+}
+
 function Solitaire() {
   const deck = generateDeck();
-  const [layout, setLayout] = useState(generateLayout(deck));
+  const [state, dispatch] = useReducer(reducer, generateLayout(deck));
+
+  // console.log(layout);
+  console.count('Layout Change');
 
   const getNextCardOnStockPile = () => {
-    const openStockPile = layout.stock[0];
-    const closedStockPile = layout.stock[1];
-    const cardToBeMoved = closedStockPile[closedStockPile.length - 1];
-    cardToBeMoved.open = true;
+    dispatch({ type: 'getNextCardOnStockPile' });
+  };
 
-    openStockPile.push(cardToBeMoved);
-    closedStockPile.pop();
-
-    setLayout({
-      foundation: [...layout.foundation],
-      tableau: [...layout.tableau],
-      stock: [
-        openStockPile, closedStockPile,
-      ],
-    });
+  const resetStockPile = () => {
+    dispatch({ type: 'resetStockPile' });
   };
 
   const moveCard = (draggedCard: CardMovementParams, targetCard: CardMovementParams) => {
-    const isValidMoveAction = validateMoveCardAction(layout, draggedCard, targetCard);
-
-    if (isValidMoveAction) {
-      // Since the validation is successful, dragged card object has returned.
-      const draggedCardObject = isValidMoveAction;
-
-      // THIS ONLY WORKS FOR SINGLE CARD MOVEMENTS FOR NOW!
-
-      // Remove the card from dragged pile.
-      const draggedPile = [...layout[draggedCard.location.pile][draggedCard.location.value]];
-      const updatedDraggedPile = draggedPile.slice(0, draggedPile.length - 1);
-
-      // Add the card to the target pile.
-      const targetPile = [...layout[targetCard.location.pile][targetCard.location.value]];
-      targetPile.push(draggedCardObject);
-
-      // Create a new layout object and update the layout.
-      const newLayout = { ...layout };
-      newLayout[draggedCard.location.pile][draggedCard.location.value] = updatedDraggedPile;
-      newLayout[targetCard.location.pile][targetCard.location.value] = targetPile;
-
-      setLayout(newLayout);
-    }
+    dispatch({
+      type: 'moveCard',
+      payload: {
+        draggedCard, targetCard,
+      },
+    });
   };
 
   useEffect(() => {
-    // Open the closed last cards on tableau piles.
-    let layoutChanged = false;
-    const newLayout = { ...layout };
-
-    newLayout.tableau.forEach((pile) => {
-      const lastCard = pile[pile.length - 1];
-
-      if (lastCard.open === false) {
-        lastCard.open = true;
-        layoutChanged = true;
-      }
-    });
-
-    if (layoutChanged) {
-      setLayout(newLayout);
-    }
-  }, [layout, setLayout]);
+    // Open the closed last cards on tableau Stacks.
+    dispatch({ type: 'openLastCardsOnTableaus' });
+  }, [state]);
 
   return (
     <StyledSolitare>
       <div className={'solitaire'}>
         <div className={'container'}>
           <div className={'stack'}>
+            { /* Foundation Stack: 1 */ }
             <FoundationBase moveCard={moveCard} stackID={0} />
             <Stack
-              stack={layout.foundation[0]}
+              stack={state.foundation[0]}
               location={{ pile: 'foundation', value: 0 }}
               moveCard={moveCard}
             />
           </div>
           <div className={'stack'}>
+            { /* Foundation Stack: 2 */ }
             <FoundationBase moveCard={moveCard} stackID={1} />
             <Stack
-              stack={layout.foundation[1]}
+              stack={state.foundation[1]}
               location={{ pile: 'foundation', value: 1 }}
               moveCard={moveCard}
             />
           </div>
           <div className={'stack'}>
+            { /* Foundation Stack: 3 */ }
             <FoundationBase moveCard={moveCard} stackID={2} />
             <Stack
-              stack={layout.foundation[2]}
+              stack={state.foundation[2]}
               location={{ pile: 'foundation', value: 2 }}
               moveCard={moveCard}
             />
           </div>
           <div className={'stack'}>
+            { /* Foundation Stack: 4 */ }
             <FoundationBase moveCard={moveCard} stackID={3} />
             <Stack
-              stack={layout.foundation[3]}
+              stack={state.foundation[3]}
               location={{ pile: 'foundation', value: 3 }}
               moveCard={moveCard}
             />
           </div>
           <div className={'stack'} />
           <div className={'stack'}>
+            { /* Stock Stack: Open */ }
             <Stack
-              stack={layout.stock[0]}
+              stack={state.stock[0]}
               location={{ pile: 'stock', value: 0 }}
               moveCard={moveCard}
             />
           </div>
           <div className={'stack'}>
+            { /* Stock Stack: Closed */ }
             <Stack
-              stack={layout.stock[0]}
-              location={{ pile: 'stock', value: 0 }}
+              stack={state.stock[1]}
+              location={{ pile: 'stock', value: 1 }}
               moveCard={moveCard}
               clickEvent={getNextCardOnStockPile}
             />
+            <button className={'closed-stock-base'} onClick={resetStockPile} type={'button'}>Reset</button>
           </div>
         </div>
         <div className={'container tableaus'}>
           <div className={'stack'}>
+            { /* Tableau Stack: 1 */ }
             <Stack
-              stack={layout.tableau[0]}
+              stack={state.tableau[0]}
               location={{ pile: 'tableau', value: 0 }}
               moveCard={moveCard}
             />
           </div>
           <div className={'stack'}>
+            { /* Tableau Stack: 2 */ }
             <Stack
-              stack={layout.tableau[1]}
+              stack={state.tableau[1]}
               location={{ pile: 'tableau', value: 1 }}
               moveCard={moveCard}
             />
           </div>
           <div className={'stack'}>
+            { /* Tableau Stack: 3 */ }
             <Stack
-              stack={layout.tableau[2]}
+              stack={state.tableau[2]}
               location={{ pile: 'tableau', value: 2 }}
               moveCard={moveCard}
             />
           </div>
           <div className={'stack'}>
+            { /* Tableau Stack: 4 */ }
             <Stack
-              stack={layout.tableau[3]}
+              stack={state.tableau[3]}
               location={{ pile: 'tableau', value: 3 }}
               moveCard={moveCard}
             />
           </div>
           <div className={'stack'}>
+            { /* Tableau Stack: 5 */ }
             <Stack
-              stack={layout.tableau[4]}
+              stack={state.tableau[4]}
               location={{ pile: 'tableau', value: 4 }}
               moveCard={moveCard}
             />
           </div>
           <div className={'stack'}>
+            { /* Tableau Stack: 6 */ }
             <Stack
-              stack={layout.tableau[5]}
+              stack={state.tableau[5]}
               location={{ pile: 'tableau', value: 5 }}
               moveCard={moveCard}
             />
           </div>
           <div className={'stack'}>
+            { /* Tableau Stack: 7 */ }
             <Stack
-              stack={layout.tableau[6]}
+              stack={state.tableau[6]}
               location={{ pile: 'tableau', value: 6 }}
               moveCard={moveCard}
             />

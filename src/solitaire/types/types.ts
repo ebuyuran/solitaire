@@ -30,10 +30,8 @@ export interface Layout {
     CardInterface[],
   ];
   stock: [
-    // Closed stock cards
-    CardInterface[],
-    // Open stock cards
-    CardInterface[],
+    CardInterface[], // Opened
+    CardInterface[], // Closed
   ];
   tableau: [
     CardInterface[],

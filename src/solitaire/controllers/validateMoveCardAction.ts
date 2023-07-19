@@ -14,6 +14,7 @@ const getCardData = (layout: Layout, movedCardData: CardMovementParams) => {
     layout[location.pile][location.value].find((card: CardInterface) => card.id === id);
 
   if (cardData === undefined) {
+    console.warn(layout);
     console.warn(movedCardData);
     throw new Error('Card data was not found!');
   } else {
@@ -26,19 +27,13 @@ const isValidMoveToTableauAction = (
   targetCard: CardInterface,
 ) => {
   // Can't move the cards of same two colours next to each other on tableau pile.
-  if (draggedCard.colour === targetCard.colour) {
-    console.warn('Invalid action: Matching colours on tableau pile.');
-    return false;
-  }
+  if (draggedCard.colour === targetCard.colour) return false;
 
   // The value of cards must follow the card order.
   const draggedCardValue = cardValues.indexOf(draggedCard.value);
   const expectedCardValue = cardValues[draggedCardValue - 1];
 
-  if (targetCard.value !== expectedCardValue) {
-    console.warn('Invalid action: Incorrect order on tableau pile.');
-    return false;
-  }
+  if (targetCard.value !== expectedCardValue) return false;
 
   return true;
 };
@@ -48,19 +43,13 @@ const isValidMoveToFoundationAction = (
   targetCard: CardInterface,
 ) => {
   // Cards must be of the same type in foundation slot.
-  if (draggedCard.type !== targetCard.type) {
-    console.warn('Different type of cards in foundation stack.');
-    return false;
-  }
+  if (draggedCard.type !== targetCard.type) return false;
 
   // Cards must follow the order in foundation slot.
   const draggedCardValue = cardValues.indexOf(draggedCard.value);
   const expectedCardValue = cardValues[draggedCardValue + 1];
 
-  if (targetCard.value !== expectedCardValue) {
-    console.warn('Invalid action: Incorrect order on foundation stack.');
-    return false;
-  }
+  if (targetCard.value !== expectedCardValue) return false;
 
   return true;
 };
@@ -85,22 +74,15 @@ export const validateMoveCardAction: MoveCardFunction = (layout, draggedCard, ta
       // Checking if a card is moving to a base foundation slot.
       if (targetCard.id === 'foundation-base') {
         // Only aces can be moved to a base foundation slot.
-        if (draggedCardObject.value !== 'ace') {
-          console.warn('Invalid action: Only aces can be moved to a base foundation slot.');
-          return false;
-        }
-
-        // Slot number must also be correct.
-        const slot = targetCard.location.value;
-        if (slot === 0 || slot === 1 || slot === 2 || slot === 3) {
+        if (draggedCardObject.value === 'ace') {
           // Validation to move a card to base foundation slot is successful.
           return draggedCardObject;
         } else {
-          throw new Error('Wrong slot number for the foundation.');
+          return false;
         }
       }
 
-      // If we are not moving to an existing card in a foundation, we need targetCardObject.
+      // If we are moving to an existing card in a foundation, we need targetCardObject.
       const targetCardObject = getCardData(layout, targetCard);
 
       return isValidMoveToFoundationAction(draggedCardObject, targetCardObject) ?

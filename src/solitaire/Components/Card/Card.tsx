@@ -25,6 +25,7 @@ export function Card(props: Props) {
     `${index * 2}em` : undefined;
 
   // React-DND
+
   const [{ isDragging }, drag] = useDrag(() => ({
     // Only allow cards which are open to be draggable.
     type: card.open ? ItemTypes.CARD : 'undraggable',

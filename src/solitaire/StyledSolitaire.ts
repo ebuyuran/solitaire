@@ -34,4 +34,11 @@ export const StyledSolitare = styled.div`
       position: relative;
     }
   }
+
+  .closed-stock-base {
+    width: 100%;
+    height: 100%;
+    background-color: white;
+    border-radius: .8em;
+  }
 `;

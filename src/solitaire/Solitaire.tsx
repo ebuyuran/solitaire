@@ -6,16 +6,15 @@ import { StyledSolitare } from './StyledSolitaire';
 import { Stack } from './Components/Stack/Stack';
 import { FoundationBase } from './Components/FoundationBase/FoundationBase';
 
-function reducer(state: Layout, action: Action) {
-  return updateLayout(state, action);
+function reducer(layout: Layout, action: Action) {
+  return updateLayout(layout, action);
 }
 
 function Solitaire() {
-  const deck = generateDeck();
-  const [state, dispatch] = useReducer(reducer, generateLayout(deck));
+  const [layout, dispatch] = useReducer(reducer, generateLayout(generateDeck()));
 
   // console.log(layout);
-  console.count('Layout Change');
+  // console.count('Layout Change');
 
   const getNextCardOnStockPile = () => {
     dispatch({ type: 'getNextCardOnStockPile' });
@@ -37,7 +36,7 @@ function Solitaire() {
   useEffect(() => {
     // Open the closed last cards on tableau Stacks.
     dispatch({ type: 'openLastCardsOnTableaus' });
-  }, [state]);
+  }, [layout]);
 
   return (
     <StyledSolitare>
@@ -47,7 +46,7 @@ function Solitaire() {
             { /* Foundation Stack: 1 */ }
             <FoundationBase moveCard={moveCard} stackID={0} />
             <Stack
-              stack={state.foundation[0]}
+              stack={layout.foundation[0]}
               location={{ pile: 'foundation', value: 0 }}
               moveCard={moveCard}
             />
@@ -56,7 +55,7 @@ function Solitaire() {
             { /* Foundation Stack: 2 */ }
             <FoundationBase moveCard={moveCard} stackID={1} />
             <Stack
-              stack={state.foundation[1]}
+              stack={layout.foundation[1]}
               location={{ pile: 'foundation', value: 1 }}
               moveCard={moveCard}
             />
@@ -65,7 +64,7 @@ function Solitaire() {
             { /* Foundation Stack: 3 */ }
             <FoundationBase moveCard={moveCard} stackID={2} />
             <Stack
-              stack={state.foundation[2]}
+              stack={layout.foundation[2]}
               location={{ pile: 'foundation', value: 2 }}
               moveCard={moveCard}
             />
@@ -74,7 +73,7 @@ function Solitaire() {
             { /* Foundation Stack: 4 */ }
             <FoundationBase moveCard={moveCard} stackID={3} />
             <Stack
-              stack={state.foundation[3]}
+              stack={layout.foundation[3]}
               location={{ pile: 'foundation', value: 3 }}
               moveCard={moveCard}
             />
@@ -83,7 +82,7 @@ function Solitaire() {
           <div className={'stack'}>
             { /* Stock Stack: Open */ }
             <Stack
-              stack={state.stock[0]}
+              stack={layout.stock[0]}
               location={{ pile: 'stock', value: 0 }}
               moveCard={moveCard}
             />
@@ -91,7 +90,7 @@ function Solitaire() {
           <div className={'stack'}>
             { /* Stock Stack: Closed */ }
             <Stack
-              stack={state.stock[1]}
+              stack={layout.stock[1]}
               location={{ pile: 'stock', value: 1 }}
               moveCard={moveCard}
               clickEvent={getNextCardOnStockPile}
@@ -103,7 +102,7 @@ function Solitaire() {
           <div className={'stack'}>
             { /* Tableau Stack: 1 */ }
             <Stack
-              stack={state.tableau[0]}
+              stack={layout.tableau[0]}
               location={{ pile: 'tableau', value: 0 }}
               moveCard={moveCard}
             />
@@ -111,7 +110,7 @@ function Solitaire() {
           <div className={'stack'}>
             { /* Tableau Stack: 2 */ }
             <Stack
-              stack={state.tableau[1]}
+              stack={layout.tableau[1]}
               location={{ pile: 'tableau', value: 1 }}
               moveCard={moveCard}
             />
@@ -119,7 +118,7 @@ function Solitaire() {
           <div className={'stack'}>
             { /* Tableau Stack: 3 */ }
             <Stack
-              stack={state.tableau[2]}
+              stack={layout.tableau[2]}
               location={{ pile: 'tableau', value: 2 }}
               moveCard={moveCard}
             />
@@ -127,7 +126,7 @@ function Solitaire() {
           <div className={'stack'}>
             { /* Tableau Stack: 4 */ }
             <Stack
-              stack={state.tableau[3]}
+              stack={layout.tableau[3]}
               location={{ pile: 'tableau', value: 3 }}
               moveCard={moveCard}
             />
@@ -135,7 +134,7 @@ function Solitaire() {
           <div className={'stack'}>
             { /* Tableau Stack: 5 */ }
             <Stack
-              stack={state.tableau[4]}
+              stack={layout.tableau[4]}
               location={{ pile: 'tableau', value: 4 }}
               moveCard={moveCard}
             />
@@ -143,7 +142,7 @@ function Solitaire() {
           <div className={'stack'}>
             { /* Tableau Stack: 6 */ }
             <Stack
-              stack={state.tableau[5]}
+              stack={layout.tableau[5]}
               location={{ pile: 'tableau', value: 5 }}
               moveCard={moveCard}
             />
@@ -151,7 +150,7 @@ function Solitaire() {
           <div className={'stack'}>
             { /* Tableau Stack: 7 */ }
             <Stack
-              stack={state.tableau[6]}
+              stack={layout.tableau[6]}
               location={{ pile: 'tableau', value: 6 }}
               moveCard={moveCard}
             />

@@ -55,12 +55,15 @@ const isValidMoveToFoundationAction = (
 };
 
 export const validateMoveCardAction: MoveCardFunction = (layout, draggedCard, targetCard) => {
+  const draggedCardObject = getCardData(layout, draggedCard);
+  // If the dragged card is not yet open, refuse validation.
+  if (!draggedCardObject.open) return false;
+
   // Checking the target card, we behave depending on which pile the card is moving to.
   switch (targetCard.location.pile) {
     case 'tableau':
     {
       // Extracting the card objects to get the values needed for validation.
-      const draggedCardObject = getCardData(layout, draggedCard);
       const targetCardObject = getCardData(layout, targetCard);
 
       return isValidMoveToTableauAction(draggedCardObject, targetCardObject) ?
@@ -69,8 +72,6 @@ export const validateMoveCardAction: MoveCardFunction = (layout, draggedCard, ta
 
     case 'foundation':
     {
-      const draggedCardObject = getCardData(layout, draggedCard);
-
       // Checking if a card is moving to a base foundation slot.
       if (targetCard.id === 'foundation-base') {
         // Only aces can be moved to a base foundation slot.

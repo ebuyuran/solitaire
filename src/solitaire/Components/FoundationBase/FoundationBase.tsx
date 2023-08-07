@@ -1,6 +1,5 @@
 import React from 'react';
 import { useDrop } from 'react-dnd';
-import { ItemTypes } from '../../constants/constants';
 import { CardMovementParams } from '../../types/types';
 
 import { StyledFoundationBase } from './StyledFoundationBase';
@@ -14,7 +13,7 @@ export function FoundationBase(props: FoundationStackProps) {
   const { stackID, moveCard } = props;
 
   const [, drop] = useDrop(() => ({
-    accept: ItemTypes.CARD,
+    accept: 'card',
     drop: (item: CardMovementParams) => {
       moveCard(
         item,

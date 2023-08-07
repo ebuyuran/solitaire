@@ -3,7 +3,6 @@ import { useDrag, useDrop } from 'react-dnd';
 import {
   CardInterface, CardLocation, CardMovementParams,
 } from '../../types/types';
-import { ItemTypes } from '../../constants/constants';
 import { StyledCard } from './StyledCard';
 
 interface Props {
@@ -26,33 +25,40 @@ export function Card(props: Props) {
 
   // React-DND
 
-  const [{ isDragging }, drag] = useDrag(() => ({
-    // Only allow cards which are open to be draggable.
-    type: card.open ? ItemTypes.CARD : 'undraggable',
-    item: {
-      id: card.id,
-      location,
-    },
-    collect: (monitor) => ({
-      isDragging: !!monitor.isDragging(),
-    }),
-  }));
+  // eslint-disable-next-line arrow-body-style
+  const [{ isDragging }, drag] = useDrag(() => {
+    // console.log('useDrag', card.open);
+    return {
+      type: 'card',
+      item: {
+        id: card.id,
+        location,
+      },
+      collect: (monitor) => ({
+        isDragging: !!monitor.isDragging(),
+      }),
+    };
+  });
 
-  const [, drop] = useDrop(() => ({
-    accept: ItemTypes.CARD,
-    drop: (item: CardMovementParams) => {
-      moveCard(
-        item,
-        {
-          id: card.id,
-          location,
-        },
-      );
-    },
-    collect: (monitor) => ({
-      isOver: !!monitor.isOver(),
-    }),
-  }), []);
+  // eslint-disable-next-line arrow-body-style
+  const [, drop] = useDrop(() => {
+    // console.log('useDrop', card.open);
+    return {
+      accept: 'card',
+      drop: (item: CardMovementParams) => {
+        moveCard(
+          item,
+          {
+            id: card.id,
+            location,
+          },
+        );
+      },
+      collect: (monitor) => ({
+        isOver: !!monitor.isOver(),
+      }),
+    };
+  }, []);
 
   return (
     <StyledCard

@@ -100,15 +100,6 @@ export const generateLayout = (deck: CardInterface[]): Layout => {
   // There are 24 cards left so remaining cards from deck array.
   const stockPile = shuffledDeck.slice(-24);
 
-  // Start the game with each last card on tableau as open.
-  tableau0[tableau0.length - 1].open = true;
-  tableau1[tableau1.length - 1].open = true;
-  tableau2[tableau2.length - 1].open = true;
-  tableau3[tableau3.length - 1].open = true;
-  tableau4[tableau4.length - 1].open = true;
-  tableau5[tableau5.length - 1].open = true;
-  tableau6[tableau6.length - 1].open = true;
-
   return {
     tableau: [tableau0, tableau1, tableau2, tableau3, tableau4, tableau5, tableau6],
     // Foundation stacks starts empty.

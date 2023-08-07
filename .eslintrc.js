@@ -22,5 +22,6 @@ module.exports = {
     'no-plusplus': [0],
     '@typescript-eslint/no-loop-func': [0],
     'no-console': [0],
+    'linebreak-style': [2, 'unix'],
   },
 };

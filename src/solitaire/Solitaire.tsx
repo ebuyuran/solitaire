@@ -1,4 +1,4 @@
-import React, { useReducer, useEffect } from 'react';
+import React, { useReducer } from 'react';
 import { generateDeck, generateLayout } from './controllers/generateDeck';
 import { Action, updateLayout } from './controllers/updateLayout';
 import { Layout, CardMovementParams } from './types/types';
@@ -14,7 +14,7 @@ function Solitaire() {
   const [layout, dispatch] = useReducer(reducer, generateLayout(generateDeck()));
 
   // console.log(layout);
-  // console.count('Layout Change');
+  console.count('Layout Change');
 
   const getNextCardOnStockPile = () => {
     dispatch({ type: 'getNextCardOnStockPile' });
@@ -32,11 +32,6 @@ function Solitaire() {
       },
     });
   };
-
-  useEffect(() => {
-    // Open the closed last cards on tableau Stacks.
-    dispatch({ type: 'openLastCardsOnTableaus' });
-  }, [layout]);
 
   return (
     <StyledSolitare>

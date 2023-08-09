@@ -4,7 +4,6 @@ import { validateMoveCardAction } from './validateMoveCardAction';
 type ValidActions =
   'getNextCardOnStockPile' |
   'resetStockPile' |
-  'openLastCardsOnTableaus' |
   'moveCard';
 
 export interface Action {
@@ -19,6 +18,17 @@ type UpdateLayout = (
   layout: Layout,
   action: Action,
 ) => Layout;
+
+const openLastCardsOnTableaus = (newLayout: Layout): Layout => {
+  newLayout.tableau.forEach((pile) => {
+    if (pile.length !== 0) {
+      const lastCard = pile[pile.length - 1];
+      if (!lastCard.open) lastCard.open = true;
+    }
+  });
+
+  return newLayout;
+};
 
 const getNextCardOnStockPile = (newLayout: Layout): Layout => {
   const openStockPile = newLayout.stock[0];
@@ -42,23 +52,6 @@ const resetStockPile = (newLayout: Layout): Layout => {
   newLayout.stock[0] = [];
 
   return newLayout;
-};
-
-const openLastCardsOnTableaus = (newLayout: Layout): Layout | null => {
-  let layoutChanged = false;
-
-  newLayout.tableau.forEach((pile) => {
-    if (pile.length !== 0) {
-      const lastCard = pile[pile.length - 1];
-
-      if (!lastCard.open) {
-        lastCard.open = true;
-        layoutChanged = true;
-      }
-    }
-  });
-
-  return layoutChanged ? newLayout : null;
 };
 
 const moveCard = (
@@ -86,7 +79,9 @@ const moveCard = (
     newLayout[draggedCard.location.pile][draggedCard.location.value] = updatedDraggedPile;
     newLayout[targetCard.location.pile][targetCard.location.value] = targetPile;
 
-    return newLayout;
+    // Open any last cards on tableaus if one of them moved to another pile
+    // and new card is closed.
+    return openLastCardsOnTableaus(newLayout);
   } else {
     return newLayout;
   }
@@ -123,12 +118,6 @@ export const updateLayout: UpdateLayout = (layout, action): Layout => {
     case 'resetStockPile':
       return resetStockPile(newLayout);
 
-    case 'openLastCardsOnTableaus':
-    {
-      const validatedNewState = openLastCardsOnTableaus(newLayout);
-      return validatedNewState === null ? layout : validatedNewState;
-    }
-
     case 'moveCard':
       if (!(action.payload)) {
         throw new Error('Missing card details in moveCard function');
@@ -137,7 +126,6 @@ export const updateLayout: UpdateLayout = (layout, action): Layout => {
 
     default:
       console.warn('Unexpected action type from reducer:', action);
+      return newLayout;
   }
-
-  return newLayout;
 };

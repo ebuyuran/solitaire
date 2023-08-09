@@ -9,7 +9,7 @@ export class Card implements CardInterface {
   type;
   value;
   colour: CardColour;
-  open = false;
+  open;
   src;
 
   constructor(type: CardType, value: CardValue) {
@@ -18,6 +18,7 @@ export class Card implements CardInterface {
     this.id = `${this.type}_${this.value}`;
     this.colour = this.type === 'club' || this.type === 'spade' ? 'black' : 'red';
     this.src = `${this.type}_${this.value}`;
+    this.open = false;
   }
 }
 
@@ -99,6 +100,15 @@ export const generateLayout = (deck: CardInterface[]): Layout => {
   // All the cards that didn't go to tableaus, goes to stock pile.
   // There are 24 cards left so remaining cards from deck array.
   const stockPile = shuffledDeck.slice(-24);
+
+  // Start the game with each last card on tableau as open.
+  tableau0[0].open = true;
+  tableau1[1].open = true;
+  tableau2[2].open = true;
+  tableau3[3].open = true;
+  tableau4[4].open = true;
+  tableau5[5].open = true;
+  tableau6[6].open = true;
 
   return {
     tableau: [tableau0, tableau1, tableau2, tableau3, tableau4, tableau5, tableau6],

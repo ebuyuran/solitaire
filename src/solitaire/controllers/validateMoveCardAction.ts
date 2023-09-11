@@ -64,6 +64,12 @@ export const validateMoveCardAction: MoveCardFunction = (layout, draggedCard, ta
   switch (targetCard.location.pile) {
     case 'tableau':
     {
+      // Checking if a card is moving to a base tableau slot.
+      if (targetCard.id === 'tableau-base') {
+        // Only kings can be moved to a base tableau foundation slot.
+        return draggedCardObject.value === 'king' ? draggedCardObject : false;
+      }
+
       // Extracting the card objects to get the values needed for validation.
       const targetCardObject = getCardData(layout, targetCard);
 
@@ -76,12 +82,7 @@ export const validateMoveCardAction: MoveCardFunction = (layout, draggedCard, ta
       // Checking if a card is moving to a base foundation slot.
       if (targetCard.id === 'foundation-base') {
         // Only aces can be moved to a base foundation slot.
-        if (draggedCardObject.value === 'ace') {
-          // Validation to move a card to base foundation slot is successful.
-          return draggedCardObject;
-        } else {
-          return false;
-        }
+        return draggedCardObject.value === 'ace' ? draggedCardObject : false;
       }
 
       // If we are moving to an existing card in a foundation, we need targetCardObject.

@@ -2,15 +2,16 @@ import React from 'react';
 import { useDrop } from 'react-dnd';
 import { CardMovementParams } from '../../types/types';
 
-import { StyledFoundationBase } from './StyledFoundationBase';
+import { StyledBaseSlot } from './StyledBaseSlot';
 
-interface FoundationStackProps {
+interface BaseSlotProps {
   stackID: number;
-  moveCard: (draggedCard: CardMovementParams, targetCard: CardMovementParams) => void
+  moveCard: (draggedCard: CardMovementParams, targetCard: CardMovementParams) => void;
+  slotType: 'foundation' | 'tableau';
 }
 
-export function FoundationBase(props: FoundationStackProps) {
-  const { stackID, moveCard } = props;
+export function BaseSlot(props: BaseSlotProps) {
+  const { stackID, moveCard, slotType } = props;
 
   const [, drop] = useDrop(() => ({
     accept: 'card',
@@ -18,9 +19,9 @@ export function FoundationBase(props: FoundationStackProps) {
       moveCard(
         item,
         {
-          id: 'foundation-base',
+          id: `${slotType}-base`,
           location: {
-            pile: 'foundation',
+            pile: slotType,
             value: stackID,
           },
         },
@@ -32,6 +33,6 @@ export function FoundationBase(props: FoundationStackProps) {
   }), []);
 
   return (
-    <StyledFoundationBase ref={drop} />
+    <StyledBaseSlot ref={drop} />
   );
 }

@@ -1,4 +1,4 @@
-import { Layout, CardMovementParams } from '../types/types';
+import { Layout, CardMovementParams, CardInterface } from '../types/types';
 import { validateMoveCardAction } from './validateMoveCardAction';
 
 type ValidActions =
@@ -65,19 +65,33 @@ const moveCard = (
     // Since the validation is successful, dragged card object has returned from validation.
     const draggedCardObject = isValidMoveAction;
 
-    // THIS ONLY WORKS FOR SINGLE CARD MOVEMENTS FOR NOW!
-    // Remove the card from dragged pile.
     const draggedPile = newLayout[draggedCard.location.pile][draggedCard.location.value];
-    // Only removing the last card as of yet,
-    // need to update this logic to handle multi-card movements.
-    const updatedDraggedPile = draggedPile.slice(0, draggedPile.length - 1);
+
+    // Check if we are removing the last card of the dragged pile.
+    const cardPileIndex = draggedPile.indexOf(draggedCardObject);
+
+    const movingASingleCard = draggedPile.length === cardPileIndex + 1;
+
+    let numberOfCardsToBeMoved: number;
+    let cardsToBeMoved: CardInterface[];
+    let updatedDraggedPile: CardInterface[];
+
+    if (movingASingleCard) {
+      cardsToBeMoved = [draggedCardObject];
+      numberOfCardsToBeMoved = 1;
+      updatedDraggedPile = draggedPile.slice(0, draggedPile.length - 1);
+    } else {
+      cardsToBeMoved = draggedPile.slice(cardPileIndex);
+      numberOfCardsToBeMoved = cardsToBeMoved.length;
+      updatedDraggedPile = draggedPile.slice(0, numberOfCardsToBeMoved);
+    }
 
     // Add the card to the target pile.
     const targetPile = newLayout[targetCard.location.pile][targetCard.location.value];
-    targetPile.push(draggedCardObject);
+    const updatedTargetPile = [...targetPile, ...cardsToBeMoved];
 
     newLayout[draggedCard.location.pile][draggedCard.location.value] = updatedDraggedPile;
-    newLayout[targetCard.location.pile][targetCard.location.value] = targetPile;
+    newLayout[targetCard.location.pile][targetCard.location.value] = updatedTargetPile;
 
     // Open any last cards on tableaus if one of them moved to another pile
     // and new card is closed.

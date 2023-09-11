@@ -64,7 +64,7 @@ export function Card(props: Props) {
     <StyledCard
       className={'card'}
       style={{
-        zIndex: index,
+        zIndex: index + 1,
         top,
         opacity: `${isDragging ? '0' : '1'}`,
       }}

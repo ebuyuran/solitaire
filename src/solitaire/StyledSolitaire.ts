@@ -3,11 +3,17 @@ import styled from 'styled-components';
 export const StyledSolitare = styled.div`
   width: 100%;
   height: 100%;
-  max-width: 120em;
-  margin: auto;
-  padding: 2em;
-  font-size: 1vw;
   background: grey;
+
+  .solitaire {
+    width: 100%;
+    height: 100%;
+    max-width: 100em;
+    margin: auto;
+    padding: 2em;
+    background: grey;
+    font-size: 10px;
+  }
 
   .container {
     position: relative;
@@ -15,20 +21,20 @@ export const StyledSolitare = styled.div`
     left: 0;
 
     width: 100%;
-    height: 18em;
 
     display: flex;
     justify-content: space-between;
   }
 
   .tableaus {
-    top: 10em;
+    padding-top: 10%;
   }
 
   .stack {
     position: relative;
     width: 13%;
-    height: 18em;
+    height: 0;
+    padding-top: 18.9%;
 
     img {
       position: relative;
@@ -36,9 +42,13 @@ export const StyledSolitare = styled.div`
   }
 
   .closed-stock-base {
+    position: absolute;
+    top: 0;
+    z-index: 0;
     width: 100%;
     height: 100%;
     background-color: white;
     border-radius: .8em;
+    border: none;
   }
 `;

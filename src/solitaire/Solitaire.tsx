@@ -1,4 +1,4 @@
-import React, { useReducer } from 'react';
+import React, { useReducer, useCallback } from 'react';
 import { generateDeck, generateLayout } from './controllers/generateDeck';
 import { Action, updateLayout } from './controllers/updateLayout';
 import { Layout, CardMovementParams } from './types/types';
@@ -16,29 +16,29 @@ function Solitaire() {
   // console.log(layout);
   console.count('Layout Change');
 
-  const getNextCardOnStockPile = () => {
+  const getNextCardOnStockPile = useCallback(() => {
     dispatch({ type: 'getNextCardOnStockPile' });
-  };
+  }, []);
 
-  const resetStockPile = () => {
+  const resetStockPile = useCallback(() => {
     dispatch({ type: 'resetStockPile' });
-  };
+  }, []);
 
-  const moveCard = (draggedCard: CardMovementParams, targetCard: CardMovementParams) => {
-    dispatch({
-      type: 'moveCard',
-      payload: {
-        draggedCard, targetCard,
-      },
-    });
-  };
+  const moveCard =
+    useCallback((draggedCard: CardMovementParams, targetCard: CardMovementParams) => {
+      dispatch({
+        type: 'moveCard',
+        payload: {
+          draggedCard, targetCard,
+        },
+      });
+    }, []);
 
   return (
     <StyledSolitare>
       <div className={'solitaire'}>
         <div className={'container'}>
           <div className={'stack'}>
-            { /* Foundation Stack: 1 */ }
             <BaseSlot moveCard={moveCard} stackID={0} slotType={'foundation'} />
             <Stack
               stack={layout.foundation[0]}
@@ -47,7 +47,6 @@ function Solitaire() {
             />
           </div>
           <div className={'stack'}>
-            { /* Foundation Stack: 2 */ }
             <BaseSlot moveCard={moveCard} stackID={1} slotType={'foundation'} />
             <Stack
               stack={layout.foundation[1]}
@@ -56,7 +55,6 @@ function Solitaire() {
             />
           </div>
           <div className={'stack'}>
-            { /* Foundation Stack: 3 */ }
             <BaseSlot moveCard={moveCard} stackID={2} slotType={'foundation'} />
             <Stack
               stack={layout.foundation[2]}
@@ -65,7 +63,6 @@ function Solitaire() {
             />
           </div>
           <div className={'stack'}>
-            { /* Foundation Stack: 4 */ }
             <BaseSlot moveCard={moveCard} stackID={3} slotType={'foundation'} />
             <Stack
               stack={layout.foundation[3]}
@@ -75,7 +72,6 @@ function Solitaire() {
           </div>
           <div className={'stack'} />
           <div className={'stack'}>
-            { /* Stock Stack: Open */ }
             <Stack
               stack={layout.stock[0]}
               location={{ pile: 'stock', value: 0 }}
@@ -83,7 +79,6 @@ function Solitaire() {
             />
           </div>
           <div className={'stack'}>
-            { /* Stock Stack: Closed */ }
             <Stack
               stack={layout.stock[1]}
               location={{ pile: 'stock', value: 1 }}

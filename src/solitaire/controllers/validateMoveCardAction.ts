@@ -55,6 +55,8 @@ const isValidMoveToFoundationAction = (
 };
 
 export const validateMoveCardAction: MoveCardFunction = (layout, draggedCard, targetCard) => {
+  // This function returns dragged card object if validation is successful,
+  // or false, if it's not.
   const draggedCardObject = getCardData(layout, draggedCard);
 
   // If the dragged card is not yet open, refuse validation.

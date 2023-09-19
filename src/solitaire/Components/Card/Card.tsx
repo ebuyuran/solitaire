@@ -13,20 +13,23 @@ interface Props {
   clickEvent?: () => void;
 }
 
+// #TODO: We don't actually need the cards on stock pile to be droppable.
+// Maybe we can add some code to differentiate.
+
 export function Card(props: Props) {
   const {
     card, pile, location, moveCard, clickEvent,
   } = props;
 
+  // In the tableau, cards are stacked with some spaces
+  // that allows players to see the cards below them.
   const index = pile.indexOf(card);
-
   const top = location.pile === 'tableau' ?
     `${index * 2}em` : undefined;
 
   // React-DND
-
   // eslint-disable-next-line arrow-body-style
-  const [{ isDragging }, drag] = useDrag(() => {
+  const [{ isDragging }, drag, preview] = useDrag(() => {
     // console.log('useDrag', card.open);
     return {
       type: 'card',
@@ -60,6 +63,10 @@ export function Card(props: Props) {
     };
   }, []);
 
+  if (isDragging) {
+    console.log('dragging');
+  }
+
   return (
     <StyledCard
       className={'card'}
@@ -70,12 +77,18 @@ export function Card(props: Props) {
       }}
       onClick={clickEvent || undefined}
     >
-      {/* An empty div is required to designate drop target. */}
+      {/*
+        An empty div is required to designate drop target.
+        Making all cards both draggable, and droppable.
+      */}
       <div ref={drop}>
-        <img
+        <div
+          id={card.id}
+          className={'card-image'}
           ref={drag}
-          src={card.open ? `./cards/${card.src}.png` : './cards/closed.png'}
-          alt={`${card.value} of ${card.type}`}
+          style={{
+            backgroundImage: card.open ? `url("./cards/${card.src}.png")` : 'url("./cards/closed.png")',
+          }}
         />
       </div>
     </StyledCard>

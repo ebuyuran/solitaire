@@ -69,24 +69,21 @@ const moveCard = (
 
     // Check if we are removing the last card of the dragged pile.
     const cardPileIndex = draggedPile.indexOf(draggedCardObject);
-
     const movingASingleCard = draggedPile.length === cardPileIndex + 1;
 
     let cardsToBeMoved: CardInterface[];
     let updatedDraggedPile: CardInterface[];
 
+    // Remove the card(s) from the dragged pile.
     if (movingASingleCard) {
       cardsToBeMoved = [draggedCardObject];
       updatedDraggedPile = draggedPile.slice(0, draggedPile.length - 1);
     } else {
       cardsToBeMoved = draggedPile.slice(cardPileIndex);
       updatedDraggedPile = draggedPile.slice(0, cardPileIndex);
-      console.log('Moving Multiple Cards');
-      console.log('cardsToBeMoved', cardsToBeMoved);
-      console.log('updatedDraggedPile', updatedDraggedPile);
     }
 
-    // Add the card to the target pile.
+    // Add the card(s) to the target pile.
     const targetPile = newLayout[targetCard.location.pile][targetCard.location.value];
     const updatedTargetPile = [...targetPile, ...cardsToBeMoved];
 
